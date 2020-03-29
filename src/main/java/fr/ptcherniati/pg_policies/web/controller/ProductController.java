@@ -1,8 +1,8 @@
-package com.ecommerce.microcommerce.web.controller;
+package fr.ptcherniati.pg_policies.web.controller;
 
-import com.ecommerce.microcommerce.dao.ProductDao;
-import com.ecommerce.microcommerce.model.Product;
-import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
+import fr.ptcherniati.pg_policies.dao.ProductDao;
+import fr.ptcherniati.pg_policies.model.Product;
+import fr.ptcherniati.pg_policies.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -19,7 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 
-@Api( description="API pour es opérations CRUD sur les produits.")
+@Api( description="API pour les opérations CRUD sur les produits.")
 
 @RestController
 public class ProductController {
@@ -85,8 +85,8 @@ public class ProductController {
 
     @DeleteMapping (value = "/Produits/{id}")
     public void supprimerProduit(@PathVariable int id) {
-
-        productDao.delete(id);
+        Product product = productDao.getOne(id);
+        productDao.delete(product);
     }
 
     @PutMapping (value = "/Produits")

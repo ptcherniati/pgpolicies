@@ -1,6 +1,6 @@
-package com.ecommerce.microcommerce.dao;
+package fr.ptcherniati.pg_policies.dao;
 
-import com.ecommerce.microcommerce.model.Product;
+import fr.ptcherniati.pg_policies.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

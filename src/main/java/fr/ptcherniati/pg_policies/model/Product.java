@@ -1,4 +1,4 @@
-package com.ecommerce.microcommerce.model;
+package fr.ptcherniati.pg_policies.model;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import org.hibernate.validator.constraints.Length;
@@ -30,8 +30,7 @@ public class Product {
     }
 
     //constructeur pour nos tests
-    public Product(int id, String nom, int prix, int prixAchat) {
-        this.id = id;
+    public Product(String nom, int prix, int prixAchat) {
         this.nom = nom;
         this.prix = prix;
         this.prixAchat = prixAchat;

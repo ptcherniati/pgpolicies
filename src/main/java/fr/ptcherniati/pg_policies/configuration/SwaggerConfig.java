@@ -1,4 +1,4 @@
-package com.ecommerce.microcommerce.configuration;
+package fr.ptcherniati.pg_policies.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,15 +8,23 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+    public static final String[] CLASSES = new String[]{"Authorities", "Users", "Produits"};
+    public static final String CLASSES_PATH = "%s.*";
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ecommerce.microcommerce.web"))
-                .paths(PathSelectors.regex("/Produits.*"))
+                .apis(RequestHandlerSelectors.basePackage("fr.ptcherniati.pg_policies.web"))
+                .paths(PathSelectors.regex(Arrays.stream(CLASSES)
+                        .map(s->String.format(CLASSES_PATH,s))
+                        .collect(Collectors.joining("|"))))
                 .build();
     }
 }
