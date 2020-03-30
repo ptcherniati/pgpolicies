@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -46,23 +47,34 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/Produits/**").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/Produits").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/Produits/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/Produits/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/Produits/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/Users/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/Users").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/Users/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/Users/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/Users/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/Authorities/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/Authorities").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/Authorities/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/Authorities/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/Authorities/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/Produits/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/api/v1/Produits").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "//api/v1Produits/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/Produits/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/Produits/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/Users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/v1/Users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/v1/Users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/Users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/Users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/Authorities/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/v1/Authorities").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/v1/Authorities/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/Authorities/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/Authorities/**").hasRole("ADMIN")
                 .and()
                 .csrf().disable()
-                .formLogin().disable();
+                .formLogin()
+                .usernameParameter("username") // default is username
+                .passwordParameter("password") // default is password
+                .loginPage("/static/index.html") // default is /login with an HTTP get
+                .failureUrl("/static/index.html?failed") // default is /login?error
+                .loginProcessingUrl("/static/index.html?ok=true");
+    }
+
+    @Bean("authenticationManager")
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
     }
 }
