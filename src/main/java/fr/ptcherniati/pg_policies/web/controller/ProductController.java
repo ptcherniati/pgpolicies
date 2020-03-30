@@ -20,8 +20,8 @@ import java.util.List;
 
 
 @Api( description="API pour les opérations CRUD sur les produits.")
-
-@RestController
+@RestController()
+@RequestMapping("/api/v1")
 public class ProductController {
 
     @Autowired

@@ -1,6 +1,6 @@
 package fr.ptcherniati.pg_policies.model.security;
 
-import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 public class Authorities {
     @Id
     @NotNull
-    @Range(min = 4, max = 255)
+    @Length(min = 4, max = 40, message = "L'username doit être entre 4 et 40 caractères.")
     private String username;
     @NotNull
     private String authority;

@@ -1,5 +1,6 @@
 package fr.ptcherniati.pg_policies.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
@@ -13,18 +14,21 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableSwagger2
+@Slf4j
 public class SwaggerConfig {
     public static final String[] CLASSES = new String[]{"Authorities", "Users", "Produits"};
-    public static final String CLASSES_PATH = "%s.*";
+    public static final String CLASSES_PATH = "/%s.*";
 
     @Bean
     public Docket api() {
+        String definition = Arrays.stream(CLASSES)
+                .map(s -> String.format(CLASSES_PATH, s))
+                .collect(Collectors.joining("|"));
+        log.warn(definition);
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("fr.ptcherniati.pg_policies.web"))
-                .paths(PathSelectors.regex(Arrays.stream(CLASSES)
-                        .map(s->String.format(CLASSES_PATH,s))
-                        .collect(Collectors.joining("|"))))
+                .paths(PathSelectors.regex(definition))
                 .build();
     }
 }
