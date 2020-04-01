@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @EnableSwagger2
 @Slf4j
 public class SwaggerConfig {
-    public static final String[] CLASSES = new String[]{"Authorities", "Users", "Produits"};
+    public static final String[] CLASSES = new String[]{"Authorities", "Users", "Aliments", "Categoçries"};
     public static final String CLASSES_PATH = "/api/v1/%s.*";
 
     @Bean

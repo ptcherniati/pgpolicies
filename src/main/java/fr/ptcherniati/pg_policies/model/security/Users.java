@@ -1,9 +1,7 @@
 package fr.ptcherniati.pg_policies.model.security;
 
-import fr.ptcherniati.pg_policies.utils.UpdatableBCrypt;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,12 +9,14 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
+//@JsonFilter("nameFilter")
 public class Users {
     @Id
     @NotNull
     @Length(min = 4, max = 40, message = "L'username doit être entre 4 et 40 caractères.")
     private String username;
     @NotNull
+    @JsonIgnore
     private String password ;
     private boolean enabled;
 
@@ -67,13 +67,11 @@ public class Users {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Users users = (Users) o;
-        return isEnabled() == users.isEnabled() &&
-                getUsername().equals(users.getUsername()) &&
-                getPassword().equals(users.getPassword());
+        return getUsername().equals(users.getUsername());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername(), getPassword(), isEnabled());
+        return Objects.hash(getUsername());
     }
 }

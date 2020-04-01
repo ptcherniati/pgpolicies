@@ -9,10 +9,12 @@ import fr.ptcherniati.pg_policies.model.security.Authorities;
 import fr.ptcherniati.pg_policies.model.security.Users;
 import fr.ptcherniati.pg_policies.utils.UpdatableBCrypt;
 import fr.ptcherniati.pg_policies.web.exceptions.DuplicateUserException;
-import fr.ptcherniati.pg_policies.web.exceptions.MissingAuthoritiesException;
 import fr.ptcherniati.pg_policies.web.exceptions.MissingUserException;
+import fr.ptcherniati.pg_policies.web.model.UsersVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.SwaggerDefinition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,10 +34,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
-@Api( description="API pour gérer les utilisateurs et les droits.")
-
+@SwaggerDefinition(
+        info = @Info(
+                title = "Security",
+                version="1.0",
+                description="API pour gérer les utilisateurs et les droits."
+        )
+)
 @RestController()
 @Slf4j
 @RequestMapping("/api/v1")
@@ -45,8 +52,7 @@ public class SecurityController {
     private static String getCurrentUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String currentUserName = authentication.getName();
-            return currentUserName;
+            return authentication.getName();
         }
         return null;
     }
@@ -66,19 +72,17 @@ public class SecurityController {
     @Autowired
     private AuthenticationManager authManager;
 
-	@RequestMapping("/")
-	public String root() {
-		return "redirect:/static/index.html";
-	}
+    @RequestMapping("/")
+    public String root() {
+        return "redirect:/static/index.html";
+    }
 
-    @RequestMapping(value ="/login", method = RequestMethod.POST)
-    public Users loginPage(@RequestParam(value = "error", required = false) String error,
-                            @RequestParam(value = "logout", required = false) String logout,
-                            @RequestParam(value = "username", required = true) String username,
-                            @RequestParam(value = "password", required = true) String password,
-                                    final HttpServletRequest request) {
-        log.warn(username);
-        log.warn(password);
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public UsersVO loginPage(@RequestParam(value = "error", required = false) String error,
+                             @RequestParam(value = "logout", required = false) String logout,
+                             @RequestParam(value = "username") String username,
+                             @RequestParam(value = "password") String password,
+                             final HttpServletRequest request) {
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(username, password);
         Authentication auth = authManager.authenticate(authReq);
 
@@ -87,15 +91,17 @@ public class SecurityController {
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
         String errorMessge = null;
-        if(error != null) {
+        if (error != null) {
             errorMessge = "Username or Password is incorrect !!";
         }
-        if(logout != null) {
+        if (logout != null) {
             errorMessge = "You have been successfully logged out !!";
         }
         final Users users = usersDAO.findById(username).orElse(null);
-        log.warn(users.toString());
-        return users;
+        final List<Authorities> authorities = authoritiesDAO.findByUsername(username);
+        UsersVO usersVO = new UsersVO(users, authorities);
+        log.warn(usersVO.toString());
+        return usersVO;
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)
@@ -131,7 +137,7 @@ public class SecurityController {
     public MappingJacksonValue authorithiesList() {
         log.warn(getCurrentUsername()+" ask get /Authorities");
 
-        Iterable<Authorities> authorities = authoritiesDAO.findAll();
+        List<Authorities> authorities = authoritiesDAO.findAll();
         return  new MappingJacksonValue(authorities);
     }
 
@@ -152,10 +158,9 @@ public class SecurityController {
      */
     @ApiOperation(value = "Récupère les authorities d'un username")
     @GetMapping(value = "/Authorities/{username}")
-    public Authorities getAuthorities(@PathVariable String username) {
-        log.warn(getCurrentUsername()+" ask get /Authorities/{username}");
-        return authoritiesDAO.findById(username)
-                .orElseThrow(()->new MissingAuthoritiesException("L'authorities avec l'username " + username + " est INTROUVABLE."));
+    public List<Authorities> getAuthorities(@PathVariable String username) {
+        log.warn(getCurrentUsername() + " ask get /Authorities/{username}");
+        return authoritiesDAO.findByUsername(username);
     }
 
     /*
@@ -216,10 +221,9 @@ public class SecurityController {
     /*
         delete authorites  with username
      */
-    @DeleteMapping (value = "/Authorities/{username}")
-    public void deleteAuthorities(@PathVariable String username) {
-        log.warn(getCurrentUsername()+" ask delete /Authorities");
-        Authorities authorities = authoritiesDAO.getOne(username);
+    @DeleteMapping(value = "/Authorities/{authorities}")
+    public void deleteAuthorities(@PathVariable Authorities authorities) {
+        log.warn(getCurrentUsername() + " ask delete /Authorities");
         authoritiesDAO.delete(authorities);
     }
 

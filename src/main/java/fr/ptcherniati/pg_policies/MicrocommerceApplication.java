@@ -3,7 +3,6 @@ package fr.ptcherniati.pg_policies;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -21,6 +20,7 @@ import java.io.File;
 public class MicrocommerceApplication implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(MicrocommerceApplication.class, args);
 	}
 
