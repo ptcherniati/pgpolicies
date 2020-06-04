@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import fr.ptcherniati.pg_policies.dao.PgPoliciesDAO;
-import fr.ptcherniati.pg_policies.dao.Security.*;
+import fr.ptcherniati.pg_policies.dao.Security.AuthoritiesDAO;
+import fr.ptcherniati.pg_policies.dao.Security.PoliciesDAO;
+import fr.ptcherniati.pg_policies.dao.Security.RolesDAO;
+import fr.ptcherniati.pg_policies.dao.Security.UsersDAO;
 import fr.ptcherniati.pg_policies.model.security.*;
 import fr.ptcherniati.pg_policies.utils.UpdatableBCrypt;
 import fr.ptcherniati.pg_policies.web.exceptions.DuplicateUserException;
@@ -104,7 +107,7 @@ public class SecurityController {
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(username, password);
         Authentication auth = authManager.authenticate(authReq);
         String user = pgPoliciesDAO.setUser("");
-        log.warn("user in base = "+user);
+        log.warn("user in base = " + user);
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
         HttpSession session = request.getSession(true);
@@ -171,7 +174,6 @@ public class SecurityController {
                 .map(u -> new AuthoritiesVO(u))
                 .peek(u -> u.setUri(UriComponentsBuilder.fromUriString(request.getRequestURL().toString()).path("/").path(u.getUsername()).build().toUri()))
                 .collect(Collectors.toList());
-        ;
         return new MappingJacksonValue(authorities);
     }
 
@@ -186,7 +188,6 @@ public class SecurityController {
                 .map(u -> new RolesVO(u))
                 .peek(u -> u.setUri(UriComponentsBuilder.fromUriString(request.getRequestURL().toString()).path("/").path(u.getNom()).build().toUri()))
                 .collect(Collectors.toList());
-        ;
         return new MappingJacksonValue(roles);
     }
 
@@ -201,7 +202,6 @@ public class SecurityController {
                 .map(u -> new PoliciesVO(u))
                 .peek(u -> u.setUri(UriComponentsBuilder.fromUriString(request.getRequestURL().toString()).path("/").path(Long.toString(u.getId())).build().toUri()))
                 .collect(Collectors.toList());
-        ;
         return new MappingJacksonValue(policies);
     }
 
@@ -251,7 +251,7 @@ public class SecurityController {
                     a.setUri(UriComponentsBuilder.fromUriString(request.getRequestURL().toString()).build().toUri());
                     return a;
                 })
-                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  "+nom+" est INTROUVABLE."));
+                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  " + nom + " est INTROUVABLE."));
     }
 
     /*
@@ -266,7 +266,7 @@ public class SecurityController {
                     a.setUri(UriComponentsBuilder.fromUriString(request.getRequestURL().toString()).build().toUri());
                     return a;
                 })
-                .orElseThrow(() -> new MissingRolesException("La policy avec l'id'  "+Long.toString(id)+" est INTROUVABLE."));
+                .orElseThrow(() -> new MissingRolesException("La policy avec l'id'  " + id + " est INTROUVABLE."));
     }
 
     /*
@@ -344,15 +344,15 @@ public class SecurityController {
             return ResponseEntity.noContent().build();
         }
         String roleName = Optional.ofNullable(policies)
-                .map(p->String.format("POLICY_%s",p.getNom().getNom()).toLowerCase())
+                .map(p -> String.format("POLICY_%s", p.getNom().getNom()).toLowerCase())
                 .orElse("");
-        if(pgPoliciesDAO.getRole(roleName).isPresent()){
+        if (pgPoliciesDAO.getRole(roleName).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }else {
+        } else {
             policies.getNom().setNom(roleName);
             addRole(policies.getNom());
-            pgPoliciesDAO.createPolicy( policies);
-        };
+            pgPoliciesDAO.createPolicy(policies);
+        }
 
         Policies addPolicy = policiesDAO.save(policies);
         if (addPolicy == null) {
@@ -383,7 +383,7 @@ public class SecurityController {
     @DeleteMapping(value = "/Authorities/{username}/{authorities}")
     public void deleteAuthoritiesByUsername(@PathVariable String username, @PathVariable String authorities) {
         Roles dbRole = rolesDAO.findById(authorities)
-                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  "+authorities+ " est INTROUVABLE."));
+                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  " + authorities + " est INTROUVABLE."));
         Authorities dbAuthorities = authoritiesDAO.findById(new AuthoritiesID(username, dbRole))
                 .orElseThrow(() -> new MissingAuthoritiesException(String.format("L'authorithies %s n'existe pas pour l'utilisateur %s", authorities, username)));
         authoritiesDAO.delete(dbAuthorities);
@@ -405,7 +405,7 @@ public class SecurityController {
     @DeleteMapping(value = "/Roles")
     public void deleteRoles(@RequestBody Roles roles) {
         Roles dbRole = rolesDAO.findById(roles.getNom())
-                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  "+roles.getNom()+ " est INTROUVABLE."));
+                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  " + roles.getNom() + " est INTROUVABLE."));
         rolesDAO.delete(dbRole);
         pgPoliciesDAO.dropRole(dbRole.getNom());
     }
@@ -416,14 +416,14 @@ public class SecurityController {
     @DeleteMapping(value = "/Policies")
     public void deletePolicies(@RequestBody Policies policies) {
         Policies dbPolicy = policiesDAO.findById(policies.getId())
-                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  "+policies.getId()+ " est INTROUVABLE."));
+                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  " + policies.getId() + " est INTROUVABLE."));
         authoritiesDAO.findAll().stream()
                 .filter(a -> a.getAuthorities().equals(policies.getNom().getNom()))
-                .peek(a -> System.out.println(a.getAuthorities()+" "+policies.getNom().getNom()))
+                .peek(a -> System.out.println(a.getAuthorities() + " " + policies.getNom().getNom()))
                 .forEach(this::deleteAuthorities);
         pgPoliciesDAO.dropPolicy(policies);
         String roleName = Optional.ofNullable(policies)
-                .map(p->p.getNom().getNom().toLowerCase())
+                .map(p -> p.getNom().getNom().toLowerCase())
                 .orElse("");
         policiesDAO.delete(dbPolicy);
         deleteRoles(dbPolicy.getNom());
@@ -435,7 +435,7 @@ public class SecurityController {
     @DeleteMapping(value = "/Authorities")
     public void deleteAuthorities(@RequestBody Authorities authorities) {
         Roles dbRole = rolesDAO.findById(authorities.getRoles().getNom())
-                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  "+authorities.getUsername()+ " est INTROUVABLE."));
+                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  " + authorities.getUsername() + " est INTROUVABLE."));
         Authorities dbAuthorities = authoritiesDAO.findById(new AuthoritiesID(authorities.getUsername(), dbRole))
                 .orElseThrow(() -> new MissingAuthoritiesException(String.format("L'authorithies %s n'existe pas pour l'utilisateur %s", authorities.getAuthorities(), authorities.getUsername())));
         authoritiesDAO.delete(authorities);
@@ -458,7 +458,7 @@ public class SecurityController {
     @PutMapping(value = "/Authorities")
     public void updateAuthorities(@RequestBody Authorities authorities) {
         Roles dbRole = rolesDAO.findById(authorities.getUsername())
-                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  "+authorities.getUsername()+ " est INTROUVABLE."));
+                .orElseThrow(() -> new MissingRolesException("Le role avec le nom  " + authorities.getUsername() + " est INTROUVABLE."));
         Authorities dbAuthorities = authoritiesDAO.findById(new AuthoritiesID(authorities.getUsername(), dbRole))
                 .orElseThrow(() -> new MissingAuthoritiesException(String.format("L'authorithies %s n'existe pas pour l'utilisateur %s", authorities.getAuthorities(), authorities.getUsername())));
         authoritiesDAO.save(authorities);

@@ -2,11 +2,7 @@ package fr.ptcherniati.pg_policies.web.model;
 
 import fr.ptcherniati.pg_policies.model.security.Policies;
 import fr.ptcherniati.pg_policies.model.security.Roles;
-import org.hibernate.validator.constraints.Length;
 
-import javax.management.relation.Role;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.net.URI;
 import java.util.Objects;
 
@@ -21,8 +17,9 @@ public class PoliciesVO {
 
     public PoliciesVO() {
     }
+
     public PoliciesVO(Policies policies) {
-    this.id = policies.getId();
+        this.id = policies.getId();
         this.nom = policies.getNom();
         this.description = policies.getDescription();
         this.using = policies.getUsing();

@@ -1,14 +1,9 @@
 package fr.ptcherniati.pg_policies.web.model;
 
-import fr.ptcherniati.pg_policies.model.security.Authorities;
 import fr.ptcherniati.pg_policies.model.security.Roles;
-import fr.ptcherniati.pg_policies.model.security.Users;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class RolesVO {
     private URI uri;
@@ -18,7 +13,7 @@ public class RolesVO {
     }
 
     public RolesVO(Roles role) {
-        this.nom= role.getNom();
+        this.nom = role.getNom();
     }
 
     public String getNom() {

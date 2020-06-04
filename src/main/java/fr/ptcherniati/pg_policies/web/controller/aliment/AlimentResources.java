@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +43,9 @@ public class AlimentResources {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
-          username = ((UserDetails)principal).getUsername();
+            username = ((UserDetails) principal).getUsername();
         } else {
-          username = principal.toString();
+            username = principal.toString();
         }
         pgPoliciesDAO.use(username);
 

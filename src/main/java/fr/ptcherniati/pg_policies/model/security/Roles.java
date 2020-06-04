@@ -1,6 +1,5 @@
 package fr.ptcherniati.pg_policies.model.security;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;
@@ -17,10 +16,11 @@ public class Roles {
     @Length(min = 6, max = 20, message = "Le role doit être entre 4 et 20 caractères.")
     @Pattern(regexp = "(ROLE|policy)_.*", message = "Le role doit commencer par ROLE_ ou policy_ (exemple ROLE_DELETE).")
     private String nom;
+
     public Roles() {
     }
 
-    public Roles(String nom){
+    public Roles(String nom) {
         this.nom = nom;
     }
 

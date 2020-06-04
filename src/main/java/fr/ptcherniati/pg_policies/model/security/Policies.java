@@ -1,11 +1,7 @@
 package fr.ptcherniati.pg_policies.model.security;
 
-import org.hibernate.validator.constraints.Length;
-
-import javax.management.relation.Role;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +10,7 @@ public class Policies {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id",unique=true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     Long id;
 
     @ManyToOne
@@ -26,6 +22,7 @@ public class Policies {
     private String check;
     @Column(name = "for_field")
     private String _for;
+
     public Policies() {
     }
 
