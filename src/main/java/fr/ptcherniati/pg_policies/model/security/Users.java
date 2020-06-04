@@ -1,6 +1,6 @@
 package fr.ptcherniati.pg_policies.model.security;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;
@@ -10,14 +10,14 @@ import java.util.Objects;
 
 @Entity
 //@JsonFilter("nameFilter")
+@JsonIgnoreProperties(value = {"password"}, allowSetters = true, allowGetters = false)
 public class Users {
     @Id
     @NotNull
     @Length(min = 4, max = 40, message = "L'username doit être entre 4 et 40 caractères.")
     private String username;
     @NotNull
-    @JsonIgnore
-    private String password ;
+    private String password;
     private boolean enabled;
 
     public Users() {

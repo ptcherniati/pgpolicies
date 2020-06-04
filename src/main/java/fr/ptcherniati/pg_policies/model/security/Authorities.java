@@ -1,5 +1,7 @@
 package fr.ptcherniati.pg_policies.model.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +11,7 @@ import java.util.Optional;
 
 @Entity
 @NamedQuery(name = "Authorities.findByUsername", query = "select a from Authorities a where a.authoritiesID.username = ?1")
+@JsonIgnoreProperties(value = {"username", "authorities"}, allowSetters = true, allowGetters = false)
 public class Authorities {
     @Embedded
     @Id
@@ -17,9 +20,9 @@ public class Authorities {
     public Authorities() {
     }
 
-    public Authorities(String username, String authorities) {
+    public Authorities(String username, Roles role) {
         this.authoritiesID.setUsername(username);
-        this.authoritiesID.setAuthority(authorities);
+        this.authoritiesID.setRoles(role);
     }
 
     public String getUsername() {
@@ -27,22 +30,28 @@ public class Authorities {
     }
 
     public void setUsername(String username) {
-        Optional.ofNullable(authoritiesID).orElseGet(AuthoritiesID::new);
+        this.authoritiesID.setUsername(username);
     }
 
     public String getAuthorities() {
-        return Optional.ofNullable(authoritiesID).map(authoritiesID1 -> authoritiesID1.getAuthority()).orElse(null);
+        return Optional.ofNullable(authoritiesID).map(authoritiesID1 -> authoritiesID1.getRoles().getNom()
+        ).orElse(null);
     }
 
-    public void setAuthorities(String authorities) {
-        this.authoritiesID.setAuthority(authorities);
+    public Roles getRoles() {
+        return Optional.ofNullable(authoritiesID).map(authoritiesID1 -> authoritiesID1.getRoles()
+        ).orElse(null);
+    }
+
+    public void setRoles(Roles roles) {
+        this.authoritiesID.setRoles(roles);
     }
 
     @Override
     public String toString() {
         return "Authorities{" +
                 "username='" + authoritiesID.getUsername() + '\'' +
-                ", authorities='" + authoritiesID.getAuthority() + '\'' +
+                ", authorities='" + authoritiesID.getRoles() + '\'' +
                 '}';
     }
 

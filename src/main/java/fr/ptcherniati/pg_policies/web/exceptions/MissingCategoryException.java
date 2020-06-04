@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class MissingAuthoritiesException extends RuntimeException {
+public class MissingCategoryException extends RuntimeException {
 
-    public MissingAuthoritiesException(String s) {
+    public MissingCategoryException(String s) {
         super(s);
     }
 }

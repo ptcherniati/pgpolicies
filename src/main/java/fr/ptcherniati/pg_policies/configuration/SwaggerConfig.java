@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @EnableSwagger2
 @Slf4j
 public class SwaggerConfig {
-    public static final String[] CLASSES = new String[]{"Authorities", "Users", "Aliments", "Categoçries"};
+    public static final String[] CLASSES = new String[]{"Log.*", "Authorities", "Users", "Aliments", "Categories", "Roles", "Policies", "Verifierqiosjio"};
     public static final String CLASSES_PATH = "/api/v1/%s.*";
 
     @Bean
@@ -31,4 +31,12 @@ public class SwaggerConfig {
                 .paths(PathSelectors.regex(definition))
                 .build();
     }
+
+    /*@Bean
+    public LinkDiscoverers discoverers() {
+        List<LinkDiscoverer> plugins = new ArrayList<>();
+        plugins.add(new CollectionJsonLinkDiscoverer());
+        return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
+
+    }*/
 }

@@ -1,6 +1,8 @@
 package fr.ptcherniati.pg_policies.model.security;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -8,19 +10,20 @@ import java.util.Objects;
 public class AuthoritiesID implements Serializable {
 
     protected String username;
-    protected String authority;
+    @ManyToOne
+    protected Roles roles;
 
     public AuthoritiesID() {
     }
 
     public AuthoritiesID(Authorities authorities) {
         this.username = authorities.getUsername();
-        this.authority = authorities.getAuthorities();
+        this.roles = authorities.getRoles();
     }
 
-    public AuthoritiesID(String username, String authority) {
+    public AuthoritiesID(String username, Roles role) {
         this.username = username;
-        this.authority = authority;
+        this.roles = role;
     }
 
     public String getUsername() {
@@ -31,19 +34,19 @@ public class AuthoritiesID implements Serializable {
         this.username = username;
     }
 
-    public String getAuthority() {
-        return authority;
+    public Roles getRoles() {
+        return roles;
     }
 
-    public void setAuthority(String authority) {
-        this.authority = authority;
+    public void setRoles(Roles roles) {
+        this.roles = roles;
     }
 
     @Override
     public String toString() {
-        return "Authorities{" +
+        return "AuthoritiesID{" +
                 "username='" + username + '\'' +
-                ", authority='" + authority + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 
@@ -53,11 +56,11 @@ public class AuthoritiesID implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         AuthoritiesID that = (AuthoritiesID) o;
         return getUsername().equals(that.getUsername()) &&
-                getAuthority().equals(that.getAuthority());
+                getRoles().equals(that.getRoles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername(), getAuthority());
+        return Objects.hash(getUsername(), getRoles());
     }
 }

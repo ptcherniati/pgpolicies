@@ -1,6 +1,5 @@
 package fr.ptcherniati.pg_policies.configuration;
 
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +11,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     DataSource dataSource;
+
+    @Override
+    protected UserDetailsService userDetailsService() {
+        return super.userDetailsService();
+    }
 
     // Create 2 users for demo
     @Override
@@ -44,8 +49,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 //HTTP Basic authentication
-                .httpBasic()
-                .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/v1/Produits/**").hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/api/v1/Produits").hasRole("ADMIN")
@@ -75,6 +78,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean("authenticationManager")
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-            return super.authenticationManagerBean();
+        return super.authenticationManagerBean();
     }
 }

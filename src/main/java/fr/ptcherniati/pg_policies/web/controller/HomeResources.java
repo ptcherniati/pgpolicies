@@ -11,7 +11,7 @@ public class HomeResources {
     public RedirectView home() {
         RedirectView result = new RedirectView();
         result.setContextRelative(true);
-        result.setUrl("/index.html");
+        result.setUrl("/static/index.html");
         return result;
     }
 
