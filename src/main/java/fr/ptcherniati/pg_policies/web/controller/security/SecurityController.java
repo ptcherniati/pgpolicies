@@ -121,8 +121,7 @@ public class SecurityController {
         }
         final Users users = usersDAO.findById(username).orElse(null);
         final List<Authorities> authorities = authoritiesDAO.findByUsername(username);
-        UsersVO usersVO = new UsersVO(users, authorities);
-        return usersVO;
+        return new UsersVO(users, authorities);
     }
 
     @RequestMapping(value = "/Logout", method = RequestMethod.GET)
