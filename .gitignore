@@ -2,24 +2,25 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
+#.apt_generated
+#.classpath
+#.factorypath
+#.project
+#.settings
+#.springBeans
 
 ### IntelliJ IDEA ###
 .idea
-.idea/*
-*.iws
+#.idea/*
+#*.iws
 *.iml
-*.ipr
+*~
+#*.ipr
 
 ### NetBeans ###
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
+#nbproject/private/
+#build/
+#nbbuild/
+#dist/
+#nbdist/
+#.nb-gradle/
