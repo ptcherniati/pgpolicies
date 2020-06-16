@@ -20,7 +20,7 @@
         Se connecter
       </v-btn>
     </v-container>
-    <v-container
+    <!--v-container
       v-if="climatikUser!=null"
     >
       {{ climatikUser }}
@@ -35,7 +35,7 @@
       >
         Se connecter 2
       </a>
-    </v-container>
+    </v-container-->
   </v-form>
 </template>
 
@@ -46,11 +46,11 @@ export default {
   name: "Login",
   beforeCreate: function() {
     console.log ('beforeCreate')
-      store.dispatch("createChallenge");
+      //store.dispatch("createChallenge");
   },
   created: function() {
     this.user = store.state.user;
-    this.climatikUser = store.state.climatikUser;
+    //this.climatikUser = store.state.climatikUser;
   },
   computed: {
     code: {
