@@ -14,23 +14,27 @@ Le rôle du back end est d'exposer la base de données sous forme de web service
 L'utilisateur accède ainsi à la base avec son rôle postgresql.
 
 
+         
 
 Côté front-end, utilisation de vuejs
 
 Base de données : utiliser le [script de création de la table](https://github.com/ptcherniati/pgpolicies/blob/master/src/main/resources/data.sql)
 compiler le front end (on peut utiliser visual studio code):
-  cp vuejs
-  npm run build
+  
+    cp vuejs
+    npm run build
 
 mettre à jour les information de la base de données dans [application.properties](https://github.com/ptcherniati/pgpolicies/blob/master/src/main/resources/application.properties)
 
 compiler la backend 
-  mvn clean install
+    
+    mvn clean install
 
 lancer le backend
 se replacer dans le dossier parent 
-  cd ..
-  mvn spring-boot:run
+    
+    cd ..
+    mvn spring-boot:run
 
 lancer [l'application](http://localhost:9090/static/index.html)
 [api swagger](http://localhost:9090/swagger-ui.html)
