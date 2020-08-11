@@ -36,7 +36,10 @@ se replacer dans le dossier parent
     cd ..
     mvn spring-boot:run
 
-lancer [l'application](http://localhost:9090/static/index.html)
+lancer :
+
+[l'application](http://localhost:9090/static/index.html)
+
 [api swagger](http://localhost:9090/swagger-ui.html)
 
 
